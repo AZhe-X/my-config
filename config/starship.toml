@@ -1,0 +1,109 @@
+# Starship prompt config
+
+# Prompt format
+format = """
+$os\
+$username$hostname\
+$directory\
+$git_branch$git_status\
+$fill\
+$python$nodejs$rust\
+$aws$gcloud$azure$kubernetes\
+$jobs\
+$status$cmd_duration$time
+$character"""
+
+[os]
+disabled = false
+format = "[$symbol]($style) "
+
+[os.symbols]
+Macos = ""
+
+[username]
+show_always = true
+format = "[$user](bold blue)"
+
+[hostname]
+ssh_only = false
+format = "[@$hostname](bold blue) "
+ssh_symbol = " "
+
+[directory]
+truncation_length = 0
+truncate_to_repo = false
+fish_style_pwd_dir_length = 0
+format = "[$path](bold cyan) "
+
+[git_branch]
+format = "[$symbol$branch]($style) "
+symbol = " "
+style = "green"
+
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count} ⇣${behind_count} "
+staged = "+${count} "
+modified = "!${count} "
+untracked = "?${count} "
+deleted = "✘${count} "
+renamed = "»${count} "
+stashed = "\\$${count} "
+conflicted = "=${count} "
+
+
+[status]
+disabled = false
+format = "[$symbol$status]($style) "
+symbol = " "
+style = "red"
+
+[cmd_duration]
+min_time = 2000
+format = "[ $duration]($style) "
+style = "yellow"
+
+[jobs]
+format = "[$symbol$number]($style) "
+symbol = " "
+
+[fill]
+symbol = " "
+
+[python]
+format = "[$symbol$version( \\($virtualenv\\))]($style) "
+symbol = " "
+
+[nodejs]
+format = "[$symbol$version]($style) "
+symbol = "󰎙 "
+
+[rust]
+format = "[$symbol$version]($style) "
+symbol = " "
+
+[aws]
+format = "[$symbol$profile(\\($region\\))]($style) "
+symbol = "󰸏 "
+
+[gcloud]
+format = "[$symbol$account(\\($project\\))]($style) "
+symbol = " "
+
+[azure]
+disabled = false
+format = "[$symbol$subscription]($style) "
+symbol = " "
+
+[kubernetes]
+disabled = false
+format = "[$symbol$context(\\($namespace\\))]($style) "
+symbol = "☸ "
+
+[time]
+disabled = false
+format = "[$time  ](dimmed white)"
+time_format = "%H:%M:%S"
