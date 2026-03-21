@@ -1,0 +1,67 @@
+# Honukai theme - migrated from iTerm2
+
+# Font (update these once you have the font files from your old laptop)
+font-family = Liga SFMono Nerd Font
+# font-size = 12
+font-codepoint-map = U+4E00-U+9FFF=PingFang SC
+font-codepoint-map = U+3400-U+4DBF=PingFang SC
+font-codepoint-map = U+3000-U+303F=PingFang SC
+font-codepoint-map = U+FF00-U+FFEF=PingFang SC
+font-codepoint-map = U+2E80-U+2EFF=PingFang SC
+
+# Colors - foreground/background
+foreground = #babcc8
+background = #000000
+
+# Cursor
+cursor-color = #ffffff
+cursor-text = #fcff6f
+cursor-style-blink = false
+
+# Selection
+selection-foreground = #ffffff
+selection-background = #2e3758
+
+# Bold color
+bold-is-bright = true
+
+# ANSI palette (0-15)
+palette = 0=#000000
+palette = 1=#dd5030
+palette = 2=#6cbd3a
+palette = 3=#e6d72d
+palette = 4=#266ffc
+palette = 5=#f258b9
+palette = 6=#38b1da
+palette = 7=#bbbbbb
+palette = 8=#555555
+palette = 9=#e17f64
+palette = 10=#7fba5a
+palette = 11=#ffff55
+palette = 12=#5d8ff3
+palette = 13=#fa83c0
+palette = 14=#78cee7
+palette = 15=#ffffff
+
+# Window
+window-width = 120
+window-height = 35
+background-opacity = 0.7
+background-blur = 25
+unfocused-split-opacity = 0.8
+
+# Scrollback
+scrollback-limit = 1000
+
+# Keybindings (vim-style)
+keybind = cmd+shift+h=goto_split:left
+keybind = cmd+shift+j=goto_split:bottom
+keybind = cmd+shift+k=goto_split:top
+keybind = cmd+shift+l=goto_split:right
+keybind = cmd+shift+v=new_split:right
+keybind = cmd+shift+s=new_split:down
+keybind = cmd+shift+alt+h=resize_split:left,10
+keybind = cmd+shift+alt+j=resize_split:down,10
+keybind = cmd+shift+alt+k=resize_split:up,10
+keybind = cmd+shift+alt+l=resize_split:right,10
+keybind = cmd+shift+alt+equal=equalize_splits
