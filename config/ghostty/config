@@ -49,6 +49,7 @@ window-height = 35
 background-opacity = 0.7
 background-blur = 25
 unfocused-split-opacity = 0.8
+split-divider-color = #666666
 
 # Scrollback
 scrollback-limit = 1000
@@ -60,8 +61,9 @@ keybind = cmd+shift+k=goto_split:top
 keybind = cmd+shift+l=goto_split:right
 keybind = cmd+shift+v=new_split:right
 keybind = cmd+shift+s=new_split:down
-keybind = cmd+shift+alt+h=resize_split:left,10
-keybind = cmd+shift+alt+j=resize_split:down,10
-keybind = cmd+shift+alt+k=resize_split:up,10
-keybind = cmd+shift+alt+l=resize_split:right,10
-keybind = cmd+shift+alt+equal=equalize_splits
+keybind = cmd+shift+comma=resize_split:left,10
+keybind = cmd+shift+period=resize_split:right,10
+keybind = cmd+shift+plus=resize_split:up,10
+keybind = cmd+shift+minus=resize_split:down,10
+keybind = cmd+shift+equal=equalize_splits
+keybind = cmd+shift+alt+comma=reload_config
