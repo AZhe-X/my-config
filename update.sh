@@ -100,5 +100,6 @@ update_file ~/.zshrc "$SCRIPT_DIR/zshrc" "zshrc"
 update_file ~/.config/ghostty/config "$SCRIPT_DIR/config/ghostty/config" "Ghostty"
 update_file ~/.config/starship.toml "$SCRIPT_DIR/config/starship.toml" "Starship"
 update_dir ~/.config/nvim "$SCRIPT_DIR/config/nvim" "Neovim"
+update_dir ~/.config/yazi "$SCRIPT_DIR/config/yazi" "Yazi"
 
 echo "=== Done ==="

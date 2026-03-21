@@ -18,7 +18,7 @@ fi
 # ─── Brew packages ───────────────────────────────────────────
 echo ""
 echo "Installing Homebrew packages..."
-brew install git gh fnm uv neovim starship
+brew install git gh fnm uv neovim starship git-delta
 brew install rustup
 
 # Apps
@@ -41,7 +41,7 @@ read -p "Install JetBrains Toolbox? [y/N] " -n 1 -r; echo
 [[ $REPLY =~ ^[Yy]$ ]] && brew install jetbrains-toolbox
 
 # Other tools
-brew install tree texlive claude-code
+brew install tree texlive claude-code btop yazi
 
 read -p "Install GAP (math software)? [y/N] " -n 1 -r; echo
 [[ $REPLY =~ ^[Yy]$ ]] && brew install gap-system/gap/gap
@@ -108,6 +108,12 @@ mkdir -p "$HOME/.config/nvim"
 cp -r "$SCRIPT_DIR/config/nvim/"* "$HOME/.config/nvim/"
 echo "  Copied Neovim config"
 
+# Yazi
+mkdir -p "$HOME/.config/yazi"
+cp "$SCRIPT_DIR/config/yazi/"* "$HOME/.config/yazi/"
+ya pack -a BennyOe/tokyo-night
+echo "  Copied Yazi config and installed theme"
+
 # ─── Node (via fnm) ─────────────────────────────────────────
 echo ""
 echo "Installing Node LTS via fnm..."
@@ -130,6 +136,13 @@ git config --global user.name "$git_name"
 
 read -p "Enter git user.email: " git_email
 git config --global user.email "$git_email"
+
+# Delta (diff tool)
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global merge.conflictStyle zdiff3
 
 # ─── SSH ─────────────────────────────────────────────────────
 echo ""
