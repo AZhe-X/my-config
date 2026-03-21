@@ -14,6 +14,8 @@ return {
     },
     gh = {},
     image = {},
+    statuscolumn = { enabled = true },
+    indent = { enabled = true },
   },
   keys = {
     { "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },

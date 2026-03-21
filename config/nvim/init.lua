@@ -8,6 +8,9 @@ vim.opt.expandtab = true
 vim.opt.conceallevel = 0
 vim.opt.clipboard = "unnamedplus"
 vim.opt.autoread = true
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
 
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
   command = "checktime",
