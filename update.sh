@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -12,20 +11,20 @@ update_file() {
     local name="$3"
 
     if [ ! -f "$src" ]; then
-        echo "⚠ $name: source not found ($src), skipping."
+        echo "  ⚠ $name: source not found ($src), skipping."
         echo ""
         return
     fi
 
     if [ ! -f "$dst" ]; then
-        echo "+ $name: new file (not yet backed up)"
+        echo "  + $name: new file (not yet backed up)"
         while true; do
-            read -p "  [y] add  [d] view  [n] skip: " -n 1 -r; echo
-            case $REPLY in
-                d|D) cat "$src" | less; ;;
-                y|Y) mkdir -p "$(dirname "$dst")" && cp "$src" "$dst"; echo "  Added."; break ;;
-                n|N) echo "  Skipped."; break ;;
-                *) echo "  Invalid choice." ;;
+            read -p "    [y] add  [d] view  [n] skip: " choice
+            case $choice in
+                d|D) cat "$src" | less ;;
+                y|Y) mkdir -p "$(dirname "$dst")" && cp "$src" "$dst" && echo "    Added." ; break ;;
+                n|N) echo "    Skipped." ; break ;;
+                *) echo "    Invalid choice." ;;
             esac
         done
         echo ""
@@ -33,73 +32,143 @@ update_file() {
     fi
 
     if diff -q "$src" "$dst" &>/dev/null; then
-        echo "✓ $name: up to date"
-        echo ""
+        echo "  ✓ $name: up to date"
     else
-        echo "≠ $name: different"
+        echo "  ≠ $name: different"
         while true; do
-            read -p "  [y] update  [d] view diff  [n] skip: " -n 1 -r; echo
-            case $REPLY in
-                d|D) diff --color "$dst" "$src" | less -R; ;;
-                y|Y) cp "$src" "$dst"; echo "  Updated."; break ;;
-                n|N) echo "  Skipped."; break ;;
-                *) echo "  Invalid choice." ;;
+            read -p "    [y] update  [d] view diff  [n] skip: " choice
+            case $choice in
+                d|D) diff -u --color "$dst" "$src" | less -R ;;
+                y|Y) cp "$src" "$dst" && echo "    Updated." ; break ;;
+                n|N) echo "    Skipped." ; break ;;
+                *) echo "    Invalid choice." ;;
             esac
         done
-        echo ""
     fi
+    echo ""
 }
 
-update_dir() {
-    local src="$1"
-    local dst="$2"
-    local name="$3"
+# Neovim: only back up config files, not plugin data
+update_nvim() {
+    local src="$HOME/.config/nvim"
+    local dst="$SCRIPT_DIR/config/nvim"
+    local name="Neovim"
 
     if [ ! -d "$src" ]; then
-        echo "⚠ $name: source not found ($src), skipping."
+        echo "  ⚠ $name: source not found, skipping."
         echo ""
         return
     fi
 
-    if [ ! -d "$dst" ]; then
-        echo "+ $name: new directory (not yet backed up)"
-        while true; do
-            read -p "  [y] add  [n] skip: " -n 1 -r; echo
-            case $REPLY in
-                y|Y) cp -r "$src" "$dst"; echo "  Added."; break ;;
-                n|N) echo "  Skipped."; break ;;
-                *) echo "  Invalid choice." ;;
-            esac
-        done
-        echo ""
-        return
+    # Compare only the config files we care about
+    local has_diff=false
+    local diff_output=""
+
+    # Check init.lua
+    if ! diff -q "$src/init.lua" "$dst/init.lua" &>/dev/null 2>&1; then
+        has_diff=true
+        diff_output+="    init.lua differs"$'\n'
     fi
 
-    local changes
-    changes=$(diff -rq "$src" "$dst" 2>/dev/null | grep -v ".git/" | grep -v "lazy-lock.json" || true)
+    # Check lua/config/
+    if ! diff -rq "$src/lua/config/" "$dst/lua/config/" &>/dev/null 2>&1; then
+        has_diff=true
+        diff_output+="    lua/config/ differs"$'\n'
+    fi
 
-    if [ -z "$changes" ]; then
-        echo "✓ $name: up to date"
-        echo ""
+    # Check lua/plugins/
+    if ! diff -rq "$src/lua/plugins/" "$dst/lua/plugins/" &>/dev/null 2>&1; then
+        has_diff=true
+        diff_output+="    lua/plugins/ differs"$'\n'
+    fi
+
+    if [ "$has_diff" = false ]; then
+        echo "  ✓ $name: up to date"
     else
-        echo "≠ $name: different"
+        echo "  ≠ $name: different"
+        echo "$diff_output"
         while true; do
-            read -p "  [y] update  [d] view diff  [n] skip: " -n 1 -r; echo
-            case $REPLY in
-                d|D) diff -r --color "$dst" "$src" 2>/dev/null | grep -v ".git/" | grep -v "lazy-lock.json" | less -R; ;;
-                y|Y) rm -rf "$dst" && cp -r "$src" "$dst"; echo "  Updated."; break ;;
-                n|N) echo "  Skipped."; break ;;
-                *) echo "  Invalid choice." ;;
+            read -p "    [y] update  [d] view diff  [n] skip: " choice
+            case $choice in
+                d|D)
+                    {
+                        diff -u --color "$dst/init.lua" "$src/init.lua" 2>/dev/null
+                        diff -ru --color "$dst/lua/config/" "$src/lua/config/" 2>/dev/null
+                        diff -ru --color "$dst/lua/plugins/" "$src/lua/plugins/" 2>/dev/null
+                    } | less -R
+                    ;;
+                y|Y)
+                    cp "$src/init.lua" "$dst/init.lua"
+                    rm -rf "$dst/lua/config" && cp -r "$src/lua/config" "$dst/lua/config"
+                    rm -rf "$dst/lua/plugins" && cp -r "$src/lua/plugins" "$dst/lua/plugins"
+                    echo "    Updated."
+                    break
+                    ;;
+                n|N) echo "    Skipped." ; break ;;
+                *) echo "    Invalid choice." ;;
             esac
         done
-        echo ""
     fi
+    echo ""
+}
+
+# Yazi: only back up config files, not runtime data
+update_yazi() {
+    local src="$HOME/.config/yazi"
+    local dst="$SCRIPT_DIR/config/yazi"
+    local name="Yazi"
+
+    if [ ! -d "$src" ]; then
+        echo "  ⚠ $name: source not found, skipping."
+        echo ""
+        return
+    fi
+
+    local has_diff=false
+    local diff_output=""
+
+    for f in yazi.toml theme.toml init.lua keymap.toml; do
+        if [ -f "$src/$f" ]; then
+            if [ ! -f "$dst/$f" ] || ! diff -q "$src/$f" "$dst/$f" &>/dev/null; then
+                has_diff=true
+                diff_output+="    $f differs"$'\n'
+            fi
+        fi
+    done
+
+    if [ "$has_diff" = false ]; then
+        echo "  ✓ $name: up to date"
+    else
+        echo "  ≠ $name: different"
+        echo "$diff_output"
+        while true; do
+            read -p "    [y] update  [d] view diff  [n] skip: " choice
+            case $choice in
+                d|D)
+                    for f in yazi.toml theme.toml init.lua keymap.toml; do
+                        [ -f "$src/$f" ] && [ -f "$dst/$f" ] && diff -u --color "$dst/$f" "$src/$f" 2>/dev/null
+                    done | less -R
+                    ;;
+                y|Y)
+                    mkdir -p "$dst"
+                    for f in yazi.toml theme.toml init.lua keymap.toml; do
+                        [ -f "$src/$f" ] && cp "$src/$f" "$dst/$f"
+                    done
+                    echo "    Updated."
+                    break
+                    ;;
+                n|N) echo "    Skipped." ; break ;;
+                *) echo "    Invalid choice." ;;
+            esac
+        done
+    fi
+    echo ""
 }
 
 update_file ~/.zshrc "$SCRIPT_DIR/zshrc" "zshrc"
 update_file ~/.config/ghostty/config "$SCRIPT_DIR/config/ghostty/config" "Ghostty"
 update_file ~/.config/starship.toml "$SCRIPT_DIR/config/starship.toml" "Starship"
-update_dir ~/.config/nvim "$SCRIPT_DIR/config/nvim" "Neovim"
-update_dir ~/.config/yazi "$SCRIPT_DIR/config/yazi" "Yazi"
+update_nvim
+update_yazi
 
 echo "=== Done ==="
