@@ -2,27 +2,27 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "=== Checking config changes ==="
+echo "=== Syncing configs from repo to local ==="
 echo ""
 
 update_file() {
-    local src="$1"
-    local dst="$2"
+    local src="$1"  # from repo (my-config)
+    local dst="$2"  # to machine (~/.config/...)
     local name="$3"
 
     if [ ! -f "$src" ]; then
-        echo "  ⚠ $name: source not found ($src), skipping."
+        echo "  ⚠ $name: not found in repo, skipping."
         echo ""
         return
     fi
 
     if [ ! -f "$dst" ]; then
-        echo "  + $name: new file (not yet backed up)"
+        echo "  + $name: not yet on machine"
         while true; do
-            read -p "    [y] add  [d] view  [n] skip: " choice
+            read -p "    [y] install  [d] view  [n] skip: " -n 1 choice; echo
             case $choice in
                 d|D) cat "$src" | less ;;
-                y|Y) mkdir -p "$(dirname "$dst")" && cp "$src" "$dst" && echo "    Added." ; break ;;
+                y|Y) mkdir -p "$(dirname "$dst")" && cp "$src" "$dst" && echo "    Installed." ; break ;;
                 n|N) echo "    Skipped." ; break ;;
                 *) echo "    Invalid choice." ;;
             esac
@@ -36,10 +36,10 @@ update_file() {
     else
         echo "  ≠ $name: different"
         while true; do
-            read -p "    [y] update  [d] view diff  [n] skip: " choice
+            read -p "    [y] apply  [d] view diff  [n] skip: " -n 1 choice; echo
             case $choice in
                 d|D) diff -u --color "$dst" "$src" | less -R ;;
-                y|Y) cp "$src" "$dst" && echo "    Updated." ; break ;;
+                y|Y) cp "$src" "$dst" && echo "    Applied." ; break ;;
                 n|N) echo "    Skipped." ; break ;;
                 *) echo "    Invalid choice." ;;
             esac
@@ -48,35 +48,33 @@ update_file() {
     echo ""
 }
 
-# Neovim: only back up config files, not plugin data
+# Neovim: only sync config files, not plugin data
 update_nvim() {
-    local src="$HOME/.config/nvim"
-    local dst="$SCRIPT_DIR/config/nvim"
+    local src="$SCRIPT_DIR/config/nvim"
+    local dst="$HOME/.config/nvim"
     local name="Neovim"
 
     if [ ! -d "$src" ]; then
-        echo "  ⚠ $name: source not found, skipping."
+        echo "  ⚠ $name: not found in repo, skipping."
         echo ""
         return
     fi
 
-    # Compare only the config files we care about
+    mkdir -p "$dst/lua/config" "$dst/lua/plugins"
+
     local has_diff=false
     local diff_output=""
 
-    # Check init.lua
     if ! diff -q "$src/init.lua" "$dst/init.lua" &>/dev/null 2>&1; then
         has_diff=true
         diff_output+="    init.lua differs"$'\n'
     fi
 
-    # Check lua/config/
     if ! diff -rq "$src/lua/config/" "$dst/lua/config/" &>/dev/null 2>&1; then
         has_diff=true
         diff_output+="    lua/config/ differs"$'\n'
     fi
 
-    # Check lua/plugins/
     if ! diff -rq "$src/lua/plugins/" "$dst/lua/plugins/" &>/dev/null 2>&1; then
         has_diff=true
         diff_output+="    lua/plugins/ differs"$'\n'
@@ -88,7 +86,7 @@ update_nvim() {
         echo "  ≠ $name: different"
         echo "$diff_output"
         while true; do
-            read -p "    [y] update  [d] view diff  [n] skip: " choice
+            read -p "    [y] apply  [d] view diff  [n] skip: " -n 1 choice; echo
             case $choice in
                 d|D)
                     {
@@ -101,7 +99,7 @@ update_nvim() {
                     cp "$src/init.lua" "$dst/init.lua"
                     rm -rf "$dst/lua/config" && cp -r "$src/lua/config" "$dst/lua/config"
                     rm -rf "$dst/lua/plugins" && cp -r "$src/lua/plugins" "$dst/lua/plugins"
-                    echo "    Updated."
+                    echo "    Applied."
                     break
                     ;;
                 n|N) echo "    Skipped." ; break ;;
@@ -112,17 +110,19 @@ update_nvim() {
     echo ""
 }
 
-# Yazi: only back up config files, not runtime data
+# Yazi: only sync config files, not runtime data
 update_yazi() {
-    local src="$HOME/.config/yazi"
-    local dst="$SCRIPT_DIR/config/yazi"
+    local src="$SCRIPT_DIR/config/yazi"
+    local dst="$HOME/.config/yazi"
     local name="Yazi"
 
     if [ ! -d "$src" ]; then
-        echo "  ⚠ $name: source not found, skipping."
+        echo "  ⚠ $name: not found in repo, skipping."
         echo ""
         return
     fi
+
+    mkdir -p "$dst"
 
     local has_diff=false
     local diff_output=""
@@ -142,7 +142,7 @@ update_yazi() {
         echo "  ≠ $name: different"
         echo "$diff_output"
         while true; do
-            read -p "    [y] update  [d] view diff  [n] skip: " choice
+            read -p "    [y] apply  [d] view diff  [n] skip: " -n 1 choice; echo
             case $choice in
                 d|D)
                     for f in yazi.toml theme.toml init.lua keymap.toml; do
@@ -150,11 +150,10 @@ update_yazi() {
                     done | less -R
                     ;;
                 y|Y)
-                    mkdir -p "$dst"
                     for f in yazi.toml theme.toml init.lua keymap.toml; do
                         [ -f "$src/$f" ] && cp "$src/$f" "$dst/$f"
                     done
-                    echo "    Updated."
+                    echo "    Applied."
                     break
                     ;;
                 n|N) echo "    Skipped." ; break ;;
@@ -165,9 +164,10 @@ update_yazi() {
     echo ""
 }
 
-update_file ~/.zshrc "$SCRIPT_DIR/zshrc" "zshrc"
-update_file ~/.config/ghostty/config "$SCRIPT_DIR/config/ghostty/config" "Ghostty"
-update_file ~/.config/starship.toml "$SCRIPT_DIR/config/starship.toml" "Starship"
+# repo → machine
+update_file "$SCRIPT_DIR/zshrc" ~/.zshrc "zshrc"
+update_file "$SCRIPT_DIR/config/ghostty/config" ~/.config/ghostty/config "Ghostty"
+update_file "$SCRIPT_DIR/config/starship.toml" ~/.config/starship.toml "Starship"
 update_nvim
 update_yazi
 
