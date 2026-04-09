@@ -70,7 +70,7 @@ ZSH_THEME=""
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting z npm rust)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting z npm rust direnv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -124,3 +124,4 @@ function y() {
 	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
 	rm -f -- "$tmp"
 }
+

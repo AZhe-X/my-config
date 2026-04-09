@@ -70,6 +70,16 @@ update_nvim() {
         diff_output+="    init.lua differs"$'\n'
     fi
 
+    if [ -f "$src/lazyvim.json" ] && ! diff -q "$src/lazyvim.json" "$dst/lazyvim.json" &>/dev/null 2>&1; then
+        has_diff=true
+        diff_output+="    lazyvim.json differs"$'\n'
+    fi
+
+    if [ -f "$src/.neoconf.json" ] && ! diff -q "$src/.neoconf.json" "$dst/.neoconf.json" &>/dev/null 2>&1; then
+        has_diff=true
+        diff_output+="    .neoconf.json differs"$'\n'
+    fi
+
     if ! diff -rq "$src/lua/config/" "$dst/lua/config/" &>/dev/null 2>&1; then
         has_diff=true
         diff_output+="    lua/config/ differs"$'\n'
@@ -91,12 +101,15 @@ update_nvim() {
                 d|D)
                     {
                         diff -u --color "$dst/init.lua" "$src/init.lua" 2>/dev/null
+                        [ -f "$src/lazyvim.json" ] && diff -u --color "$dst/lazyvim.json" "$src/lazyvim.json" 2>/dev/null
                         diff -ru --color "$dst/lua/config/" "$src/lua/config/" 2>/dev/null
                         diff -ru --color "$dst/lua/plugins/" "$src/lua/plugins/" 2>/dev/null
                     } | less -R
                     ;;
                 y|Y)
                     cp "$src/init.lua" "$dst/init.lua"
+                    [ -f "$src/lazyvim.json" ] && cp "$src/lazyvim.json" "$dst/lazyvim.json"
+                    [ -f "$src/.neoconf.json" ] && cp "$src/.neoconf.json" "$dst/.neoconf.json"
                     rm -rf "$dst/lua/config" && cp -r "$src/lua/config" "$dst/lua/config"
                     rm -rf "$dst/lua/plugins" && cp -r "$src/lua/plugins" "$dst/lua/plugins"
                     echo "    Applied."

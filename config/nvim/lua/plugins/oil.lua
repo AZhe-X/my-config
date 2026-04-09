@@ -1,7 +1,5 @@
 return {
   "stevearc/oil.nvim",
-  ---@module 'oil'
-  ---@type oil.SetupOpts
   opts = {
     default_file_explorer = false,
     float = {
@@ -10,9 +8,7 @@ return {
     },
   },
   keys = {
-    { "<leader>dd", "<cmd>Oil --float<cr>", desc = "Open directory (float)" },
-    { "<leader>dx", function() require("oil").close() end, desc = "Close oil" },
+    { "<leader>fo", "<cmd>Oil --float<cr>", desc = "Open directory (Oil)" },
   },
   dependencies = { { "nvim-mini/mini.icons", opts = {} } },
-  lazy = false,
 }

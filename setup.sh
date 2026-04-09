@@ -18,7 +18,7 @@ fi
 # ─── Brew packages ───────────────────────────────────────────
 echo ""
 echo "Installing Homebrew packages..."
-brew install git gh fnm uv neovim starship git-delta tree-sitter-cli
+brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg
 brew install rustup
 
 # Apps
@@ -105,7 +105,7 @@ echo "  Copied Starship config"
 
 # Neovim
 mkdir -p "$HOME/.config/nvim"
-cp -r "$SCRIPT_DIR/config/nvim/"* "$HOME/.config/nvim/"
+cp -r "$SCRIPT_DIR/config/nvim/"* "$SCRIPT_DIR/config/nvim/".[^.]* "$HOME/.config/nvim/" 2>/dev/null
 echo "  Copied Neovim config"
 
 # Yazi
@@ -143,6 +143,9 @@ git config --global interactive.diffFilter "delta --color-only"
 git config --global delta.navigate true
 git config --global delta.dark true
 git config --global merge.conflictStyle zdiff3
+
+# Git aliases
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
 # ─── SSH ─────────────────────────────────────────────────────
 echo ""

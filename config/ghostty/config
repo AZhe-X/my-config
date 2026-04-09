@@ -12,6 +12,7 @@ font-codepoint-map = U+2E80-U+2EFF=PingFang SC
 # Colors - foreground/background
 foreground = #babcc8
 background = #000000
+palette-generate = false
 
 # Cursor
 cursor-color = #ffffff
@@ -46,7 +47,7 @@ palette = 15=#ffffff
 # Window
 window-width = 120
 window-height = 35
-background-opacity = 0.7
+background-opacity = 0.75
 background-blur = 25
 unfocused-split-opacity = 0.8
 split-divider-color = #666666
