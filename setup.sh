@@ -18,7 +18,7 @@ fi
 # ─── Brew packages ───────────────────────────────────────────
 echo ""
 echo "Installing Homebrew packages..."
-brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg
+brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg fzf bat ripgrep
 brew install rustup
 
 # Apps
