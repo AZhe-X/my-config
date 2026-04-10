@@ -179,6 +179,7 @@ update_yazi() {
 
 # repo → machine
 update_file "$SCRIPT_DIR/zshrc" ~/.zshrc "zshrc"
+update_file "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf "tmux"
 update_file "$SCRIPT_DIR/config/ghostty/config" ~/.config/ghostty/config "Ghostty"
 update_file "$SCRIPT_DIR/config/starship.toml" ~/.config/starship.toml "Starship"
 update_nvim

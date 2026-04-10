@@ -18,7 +18,7 @@ fi
 # ─── Brew packages ───────────────────────────────────────────
 echo ""
 echo "Installing Homebrew packages..."
-brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg fzf bat ripgrep
+brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg fzf bat ripgrep tmux
 brew install rustup
 
 # Apps
@@ -113,6 +113,19 @@ mkdir -p "$HOME/.config/yazi"
 cp "$SCRIPT_DIR/config/yazi/"* "$HOME/.config/yazi/"
 ya pack -a BennyOe/tokyo-night
 echo "  Copied Yazi config and installed theme"
+
+# Tmux
+cp "$SCRIPT_DIR/tmux.conf" "$HOME/.tmux.conf"
+echo "  Copied tmux config"
+
+# Install TPM (Tmux Plugin Manager)
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    echo "  Installed TPM"
+else
+    echo "  TPM already installed, skipping."
+fi
+echo "  NOTE: Open tmux and press 'Ctrl+Space I' to install tmux plugins"
 
 # ─── Node (via fnm) ─────────────────────────────────────────
 echo ""

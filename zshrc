@@ -103,6 +103,9 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # fnm
 eval "$(fnm env --use-on-cd --shell zsh)"
 
