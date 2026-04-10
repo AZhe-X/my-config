@@ -21,6 +21,10 @@ echo "Installing Homebrew packages..."
 brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg fzf bat ripgrep tmux
 brew install rustup
 
+# macism (CJK input method switcher for im-select.nvim)
+brew tap laishulu/homebrew
+brew install macism
+
 # Apps
 brew install ghostty
 brew install 1password
