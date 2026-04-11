@@ -4,3 +4,6 @@
 vim.opt.relativenumber = false
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+
+-- Only run prettier if the project has a config file
+vim.g.lazyvim_prettier_needs_config = true
