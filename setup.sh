@@ -18,7 +18,7 @@ fi
 # ─── Brew packages ───────────────────────────────────────────
 echo ""
 echo "Installing Homebrew packages..."
-brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv imagemagick librsvg fzf bat ripgrep tmux
+brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv librsvg fzf bat ripgrep tmux
 brew install rustup
 
 # macism (CJK input method switcher for im-select.nvim)
@@ -46,6 +46,8 @@ read -p "Install JetBrains Toolbox? [y/N] " -n 1 -r; echo
 
 # Other tools
 brew install tree texlive claude-code btop yazi
+brew install ffmpeg-full sevenzip jq poppler zoxide resvg imagemagick-full font-symbols-only-nerd-font
+brew link ffmpeg-full imagemagick-full -f --overwrite
 
 read -p "Install GAP (math software)? [y/N] " -n 1 -r; echo
 [[ $REPLY =~ ^[Yy]$ ]] && brew install gap-system/gap/gap
