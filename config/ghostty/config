@@ -70,3 +70,4 @@ keybind = cmd+shift+plus=resize_split:up,10
 keybind = cmd+shift+minus=resize_split:down,10
 keybind = cmd+shift+equal=equalize_splits
 keybind = cmd+shift+alt+comma=reload_config
+keybind = global:alt+enter=new_window

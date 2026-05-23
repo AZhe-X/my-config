@@ -182,6 +182,8 @@ update_file "$SCRIPT_DIR/zshrc" ~/.zshrc "zshrc"
 update_file "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf "tmux"
 update_file "$SCRIPT_DIR/config/ghostty/config" ~/.config/ghostty/config "Ghostty"
 update_file "$SCRIPT_DIR/config/starship.toml" ~/.config/starship.toml "Starship"
+update_file "$SCRIPT_DIR/config/yabai/yabairc" ~/.config/yabai/yabairc "yabai"
+update_file "$SCRIPT_DIR/config/skhd/skhdrc" ~/.config/skhd/skhdrc "skhd"
 update_nvim
 update_yazi
 

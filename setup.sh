@@ -21,6 +21,10 @@ echo "Installing Homebrew packages..."
 brew install git gh fnm uv neovim starship git-delta tree-sitter-cli direnv librsvg fzf bat ripgrep tmux
 brew install rustup
 
+# yabai (window manager) + skhd (hotkey daemon)
+brew install asmvik/formulae/yabai
+brew install koekeishiya/formulae/skhd
+
 # macism (CJK input method switcher for im-select.nvim)
 brew tap laishulu/homebrew
 brew install macism
@@ -119,6 +123,19 @@ mkdir -p "$HOME/.config/yazi"
 cp "$SCRIPT_DIR/config/yazi/"* "$HOME/.config/yazi/"
 ya pack -a BennyOe/tokyo-night
 echo "  Copied Yazi config and installed theme"
+
+# Yabai + skhd
+mkdir -p "$HOME/.config/yabai" "$HOME/.config/skhd"
+cp "$SCRIPT_DIR/config/yabai/yabairc" "$HOME/.config/yabai/yabairc"
+cp "$SCRIPT_DIR/config/skhd/skhdrc" "$HOME/.config/skhd/skhdrc"
+chmod +x "$HOME/.config/yabai/yabairc" "$HOME/.config/skhd/skhdrc"
+echo "  Copied yabai and skhd config"
+
+# Register yabai and skhd as login services (auto-start on login)
+yabai --start-service
+skhd --start-service
+echo "  Started yabai and skhd (will auto-start on login)"
+echo "  NOTE: Grant Accessibility permission for yabai and skhd in System Settings → Privacy & Security → Accessibility"
 
 # Tmux
 cp "$SCRIPT_DIR/tmux.conf" "$HOME/.tmux.conf"
